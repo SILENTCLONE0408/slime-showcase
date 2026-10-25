@@ -59,9 +59,7 @@
             --theme-bg-gradient: radial-gradient(circle at 50% 20%, #11221c 0%, #060e0a 100%);
         }
 
-        *, ::before, ::after {
-            box-sizing: border-box;
-        }
+        *, ::before, ::after { box-sizing: border-box; }
 
         body {
             background: var(--theme-bg-gradient);
@@ -95,11 +93,7 @@
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), 
-                        background-color 0.25s ease, 
-                        border-color 0.25s ease, 
-                        box-shadow 0.25s ease;
-            will-change: transform, background-color;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
         .glass-card:hover {
@@ -126,8 +120,6 @@
 
     <!-- MAIN PAGE BACKGROUND LAYER -->
     <div id="main-bg-layer" class="fixed inset-0 z-0 bg-cover bg-center pointer-events-none hw-accel transition-opacity duration-500"></div>
-
-    <!-- Interactive Canvas Background -->
     <canvas id="slime-canvas" class="fixed inset-0 pointer-events-none z-10 hw-accel"></canvas>
 
     <!-- 1. ENTRANCE / SPLASH SCREEN -->
@@ -150,7 +142,7 @@
             </div>
 
             <h1 class="text-4xl md:text-5xl font-fredoka font-bold text-white mb-3 tracking-wide drop-shadow-md">
-                Welcome to <span class="text-[var(--theme-primary)]" id="splash-brand-text">Slime Space</span>
+                Welcome to <span class="text-[var(--theme-primary)]">Slime Space</span>
             </h1>
             <p class="text-slate-300 text-sm md:text-base max-w-sm mb-8 font-sans drop-shadow-sm">
                 Cute & Cool Interactive Persona World
@@ -165,8 +157,6 @@
 
     <!-- MAIN APP CONTAINER -->
     <div id="app-content" class="relative z-20 max-w-4xl mx-auto px-4 py-6 w-full opacity-0 transition-opacity duration-500 hw-accel">
-        
-        <!-- HEADER / NAVIGATION BAR -->
         <header class="w-full flex justify-between items-center mb-8 glass-panel rounded-2xl p-4">
             <div class="flex items-center space-x-3 cursor-pointer select-none" onclick="handleSecretClick(event)">
                 <div class="w-10 h-10 rounded-full bg-[var(--theme-primary)] flex items-center justify-center text-slate-950 font-bold font-fredoka shadow-[0_0_12px_var(--theme-glow)]">
@@ -177,14 +167,12 @@
                     <span class="text-xs px-2 py-0.5 rounded-full bg-[var(--theme-primary)]/20 text-[var(--theme-primary)] border border-[var(--theme-primary)]/40 ml-2 font-mono">v3.8 Ultra Pro</span>
                 </div>
             </div>
-
-            <!-- Secret Hotspot Top Right -->
             <div onclick="requestAdminAccess()" class="w-8 h-8 opacity-0 hover:opacity-20 cursor-pointer flex items-center justify-center rounded-full transition" title="Hotspot">
                 <i class="fa-solid fa-key text-xs text-white"></i>
             </div>
         </header>
 
-        <!-- 2. HERO PROFILE SECTION -->
+        <!-- HERO PROFILE -->
         <section class="glass-panel rounded-3xl p-6 md:p-10 mb-8 relative overflow-hidden">
             <div class="absolute -top-20 -right-20 w-64 h-64 bg-[var(--theme-primary)] opacity-10 blur-2xl rounded-full pointer-events-none"></div>
 
@@ -226,49 +214,38 @@
                             <h1 id="user-name" class="text-3xl md:text-4xl font-fredoka font-bold text-white tracking-wide">Slime Master</h1>
                             <span id="user-pronouns" class="text-xs font-mono bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10">They/Them</span>
                             <span id="user-status" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                                Online & Gaming
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online & Gaming
                             </span>
                         </div>
                         <p id="user-title" class="text-base font-semibold text-[var(--theme-primary)]">Creative Digital Artist & Gamer</p>
                     </div>
-
-                    <p id="user-bio" class="text-slate-300 text-sm md:text-base leading-relaxed bg-black/20 p-4 rounded-2xl border border-white/5">
-                        Hello! Welcome to my personal slime cozy space. I love digital painting, VRChat world exploration, and creating cute character designs. Feel free to connect!
-                    </p>
-
+                    <p id="user-bio" class="text-slate-300 text-sm md:text-base leading-relaxed bg-black/20 p-4 rounded-2xl border border-white/5"></p>
                     <div id="user-tags" class="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1"></div>
                 </div>
             </div>
         </section>
 
-        <!-- 3. SOCIAL LINKS GRID -->
+        <!-- SOCIAL LINKS -->
         <section class="glass-panel rounded-3xl p-6 md:p-8 mb-8">
-            <div class="mb-6">
-                <h2 class="text-2xl font-fredoka font-bold text-white flex items-center">
-                    <i class="fa-solid fa-compass text-[var(--theme-primary)] mr-2.5"></i> Social Networks & Links
-                </h2>
-                <p class="text-xs text-slate-400 mt-0.5">Connect with me across the web</p>
-            </div>
+            <h2 class="text-2xl font-fredoka font-bold text-white flex items-center mb-6">
+                <i class="fa-solid fa-compass text-[var(--theme-primary)] mr-2.5"></i> Social Networks & Links
+            </h2>
             <div id="social-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
         </section>
 
-        <!-- 4. GALLERY SHOWCASE SECTION -->
+        <!-- GALLERY -->
         <section class="glass-panel rounded-3xl p-6 md:p-8 mb-8">
-            <div class="mb-6">
-                <h2 class="text-2xl font-fredoka font-bold text-white flex items-center">
-                    <i class="fa-solid fa-images text-[var(--theme-primary)] mr-2.5"></i> Persona Showcase & Gallery
-                </h2>
-                <p class="text-xs text-slate-400 mt-0.5">Character artwork, screenshots and creative collections</p>
-            </div>
+            <h2 class="text-2xl font-fredoka font-bold text-white flex items-center mb-6">
+                <i class="fa-solid fa-images text-[var(--theme-primary)] mr-2.5"></i> Persona Showcase & Gallery
+            </h2>
             <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
         </section>
     </div>
 
-    <!-- 5. PASSWORD SECURITY AUTH MODAL -->
+    <!-- 5. PASSWORD SECURITY AUTH MODAL (已改为明文显示，彻底杜绝输入法和遮挡导致的卡顿 Bug) -->
     <div id="auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 hw-accel">
         <div id="auth-card" class="glass-panel w-full max-w-md rounded-3xl p-6 border border-white/10 shadow-2xl relative">
-            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+            <button type="button" onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
                 <i class="fa-solid fa-xmark"></i>
             </button>
 
@@ -280,11 +257,12 @@
                 <p class="text-xs text-slate-400 mt-1">Enter password to access the Control Panel</p>
             </div>
 
-            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+            <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Password (明文显示)</label>
                     <div class="relative">
-                        <input type="password" id="auth-password" required placeholder="Enter password..." class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition pl-10">
+                        <!-- 改为 type="text"，输入时能直接看到完整字母 -->
+                        <input type="text" id="auth-password" placeholder="Enter password (e.g. slime123)..." class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition pl-10">
                         <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
                     </div>
                     <p id="auth-error" class="text-xs text-rose-400 mt-1.5 hidden flex items-center gap-1">
@@ -292,17 +270,16 @@
                     </p>
                 </div>
 
-                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] text-slate-950 font-bold font-fredoka text-base shadow-[0_0_15px_var(--theme-glow)] hover:opacity-95 transition">
+                <button type="button" onclick="handleAuthSubmit()" class="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] text-slate-950 font-bold font-fredoka text-base shadow-[0_0_15px_var(--theme-glow)] hover:opacity-95 transition cursor-pointer">
                     Unlock Admin Panel
                 </button>
-            </form>
+            </div>
         </div>
     </div>
 
     <!-- 6. ADMIN CONTROL PANEL MODAL -->
     <div id="admin-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto hw-accel">
         <div class="glass-panel w-full max-w-3xl rounded-3xl p-6 border border-white/10 my-auto max-h-[90vh] flex flex-col">
-            
             <div class="flex items-center justify-between pb-4 border-b border-white/10">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-xl bg-[var(--theme-primary)] text-slate-950 flex items-center justify-center font-bold">
@@ -313,170 +290,92 @@
                         <p class="text-xs text-slate-400">Manage profile info, backgrounds, links, theme & security</p>
                     </div>
                 </div>
-                <button onclick="toggleAdminPanel()" class="text-slate-400 hover:text-white w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                <button type="button" onclick="toggleAdminPanel()" class="text-slate-400 hover:text-white w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
 
             <div class="flex border-b border-white/10 my-4 gap-2 overflow-x-auto pb-2 text-sm font-semibold">
-                <button onclick="switchTab('profile')" id="tab-btn-profile" class="px-4 py-2 rounded-xl bg-[var(--theme-primary)] text-slate-950 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-user"></i> Profile Info
-                </button>
-                <button onclick="switchTab('backgrounds')" id="tab-btn-backgrounds" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-image"></i> Backgrounds
-                </button>
-                <button onclick="switchTab('links')" id="tab-btn-links" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-link"></i> Social Links
-                </button>
-                <button onclick="switchTab('gallery')" id="tab-btn-gallery" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-images"></i> Gallery
-                </button>
-                <button onclick="switchTab('theme')" id="tab-btn-theme" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-palette"></i> Theme
-                </button>
-                <button onclick="switchTab('security')" id="tab-btn-security" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
-                    <i class="fa-solid fa-key"></i> Security
-                </button>
+                <button type="button" onclick="switchTab('profile')" id="tab-btn-profile" class="px-4 py-2 rounded-xl bg-[var(--theme-primary)] text-slate-950 flex items-center gap-2 whitespace-nowrap">Profile Info</button>
+                <button type="button" onclick="switchTab('backgrounds')" id="tab-btn-backgrounds" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">Backgrounds</button>
+                <button type="button" onclick="switchTab('links')" id="tab-btn-links" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">Social Links</button>
+                <button type="button" onclick="switchTab('gallery')" id="tab-btn-gallery" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">Gallery</button>
+                <button type="button" onclick="switchTab('theme')" id="tab-btn-theme" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">Theme</button>
+                <button type="button" onclick="switchTab('security')" id="tab-btn-security" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">Security</button>
             </div>
 
             <div class="flex-1 overflow-y-auto pr-1 space-y-4">
-                <!-- TAB 1: PROFILE INFO -->
                 <div id="tab-content-profile" class="space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs text-slate-300 mb-1">Display Name</label>
-                            <input type="text" id="edit-name" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-slate-300 mb-1">Title / Subtitle</label>
-                            <input type="text" id="edit-title" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-slate-300 mb-1">Pronouns</label>
-                            <input type="text" id="edit-pronouns" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
-                        </div>
-                        <div>
-                            <label class="block text-xs text-slate-300 mb-1">Status Message</label>
-                            <input type="text" id="edit-status" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
-                        </div>
+                        <div><label class="block text-xs text-slate-300 mb-1">Display Name</label><input type="text" id="edit-name" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        <div><label class="block text-xs text-slate-300 mb-1">Title / Subtitle</label><input type="text" id="edit-title" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        <div><label class="block text-xs text-slate-300 mb-1">Pronouns</label><input type="text" id="edit-pronouns" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                        <div><label class="block text-xs text-slate-300 mb-1">Status Message</label><input type="text" id="edit-status" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
                     </div>
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">Custom Image Avatar URL</label>
-                        <input type="url" id="edit-avatar-url" placeholder="https://..." class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">Bio Description</label>
-                        <textarea id="edit-bio" rows="3" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">Tags (Comma separated)</label>
-                        <input type="text" id="edit-tags" placeholder="Gamer, Illustrator, VRChat" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
-                    </div>
+                    <div><label class="block text-xs text-slate-300 mb-1">Custom Image Avatar URL</label><input type="url" id="edit-avatar-url" placeholder="https://..." class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
+                    <div><label class="block text-xs text-slate-300 mb-1">Bio Description</label><textarea id="edit-bio" rows="3" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></textarea></div>
+                    <div><label class="block text-xs text-slate-300 mb-1">Tags (Comma separated)</label><input type="text" id="edit-tags" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
                 </div>
 
-                <!-- TAB 2: BACKGROUNDS -->
                 <div id="tab-content-backgrounds" class="space-y-6 hidden">
                     <div class="p-4 rounded-2xl bg-black/30 border border-white/10 space-y-4">
                         <div class="flex justify-between items-center">
-                            <h4 class="text-sm font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-door-open text-[var(--theme-primary)]"></i> Welcome / Splash Screen Background
-                            </h4>
-                            <button onclick="resetBackgroundSettings('welcome')" class="text-xs text-slate-400 hover:text-rose-300 transition">
-                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset
-                            </button>
+                            <h4 class="text-sm font-bold text-white">Welcome / Splash Screen Background</h4>
+                            <button type="button" onclick="resetBackgroundSettings('welcome')" class="text-xs text-slate-400 hover:text-rose-300">Reset</button>
                         </div>
-                        <div>
-                            <label class="block text-xs text-slate-300 mb-1">Image URL</label>
-                            <input type="url" id="edit-welcome-bg-url" placeholder="https://..." class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
-                        </div>
+                        <input type="url" id="edit-welcome-bg-url" placeholder="https://..." class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white">
                     </div>
-
                     <div class="p-4 rounded-2xl bg-black/30 border border-white/10 space-y-4">
                         <div class="flex justify-between items-center">
-                            <h4 class="text-sm font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-desktop text-[var(--theme-primary)]"></i> Main Page Background Overlay
-                            </h4>
-                            <button onclick="resetBackgroundSettings('main')" class="text-xs text-slate-400 hover:text-rose-300 transition">
-                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset
-                            </button>
+                            <h4 class="text-sm font-bold text-white">Main Page Background Overlay</h4>
+                            <button type="button" onclick="resetBackgroundSettings('main')" class="text-xs text-slate-400 hover:text-rose-300">Reset</button>
                         </div>
-                        <div>
-                            <label class="block text-xs text-slate-300 mb-1">Image URL</label>
-                            <input type="url" id="edit-main-bg-url" placeholder="https://..." class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
-                        </div>
+                        <input type="url" id="edit-main-bg-url" placeholder="https://..." class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white">
                     </div>
                 </div>
 
-                <!-- TAB 3: LINKS -->
                 <div id="tab-content-links" class="space-y-4 hidden">
                     <div class="flex justify-between items-center">
-                        <h4 class="text-sm font-bold text-white">Manage Social Link Cards</h4>
-                        <button onclick="addSocialLinkItem()" class="px-3 py-1.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 text-xs font-bold flex items-center gap-1.5">
-                            <i class="fa-solid fa-plus"></i> Add Link
-                        </button>
+                        <h4 class="text-sm font-bold text-white">Manage Social Links</h4>
+                        <button type="button" onclick="addSocialLinkItem()" class="px-3 py-1.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 text-xs font-bold">+ Add Link</button>
                     </div>
                     <div id="admin-links-list" class="space-y-3"></div>
                 </div>
 
-                <!-- TAB 4: GALLERY -->
                 <div id="tab-content-gallery" class="space-y-4 hidden">
                     <div class="flex justify-between items-center">
                         <h4 class="text-sm font-bold text-white">Manage Gallery Artworks</h4>
-                        <button onclick="addGalleryItem()" class="px-3 py-1.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 text-xs font-bold flex items-center gap-1.5">
-                            <i class="fa-solid fa-plus"></i> Add Artwork
-                        </button>
+                        <button type="button" onclick="addGalleryItem()" class="px-3 py-1.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 text-xs font-bold">+ Add Artwork</button>
                     </div>
                     <div id="admin-gallery-list" class="space-y-3"></div>
                 </div>
 
-                <!-- TAB 5: THEME -->
                 <div id="tab-content-theme" class="space-y-4 hidden">
                     <label class="block text-xs text-slate-300 mb-2">Select Accent Theme</label>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <button onclick="setThemePreset('#10b981', '#06b6d4', 'radial-gradient(circle at 50% 20%, #11221c 0%, #060e0a 100%)')" class="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 text-left text-xs font-bold text-white hover:border-emerald-400 transition">
-                            <span class="w-4 h-4 rounded-full bg-emerald-500 inline-block mb-1"></span><br>Slime Emerald
-                        </button>
-                        <button onclick="setThemePreset('#3b82f6', '#8b5cf6', 'radial-gradient(circle at 50% 20%, #101827 0%, #030712 100%)')" class="p-3 rounded-2xl bg-blue-950/40 border border-blue-500/40 text-left text-xs font-bold text-white hover:border-blue-400 transition">
-                            <span class="w-4 h-4 rounded-full bg-blue-500 inline-block mb-1"></span><br>Cyber Blue
-                        </button>
-                        <button onclick="setThemePreset('#ec4899', '#f43f5e', 'radial-gradient(circle at 50% 20%, #29111c 0%, #0d0408 100%)')" class="p-3 rounded-2xl bg-pink-950/40 border border-pink-500/40 text-left text-xs font-bold text-white hover:border-pink-400 transition">
-                            <span class="w-4 h-4 rounded-full bg-pink-500 inline-block mb-1"></span><br>Neon Pink
-                        </button>
-                        <button onclick="setThemePreset('#eab308', '#f97316', 'radial-gradient(circle at 50% 20%, #261c0c 0%, #0d0803 100%)')" class="p-3 rounded-2xl bg-amber-950/40 border border-amber-500/40 text-left text-xs font-bold text-white hover:border-amber-400 transition">
-                            <span class="w-4 h-4 rounded-full bg-amber-500 inline-block mb-1"></span><br>Amber Gold
-                        </button>
+                        <button type="button" onclick="setThemePreset('#10b981', '#06b6d4', 'radial-gradient(circle at 50% 20%, #11221c 0%, #060e0a 100%)')" class="p-3 rounded-2xl bg-emerald-950/40 border border-emerald-500/40 text-left text-xs font-bold text-white">Slime Emerald</button>
+                        <button type="button" onclick="setThemePreset('#3b82f6', '#8b5cf6', 'radial-gradient(circle at 50% 20%, #101827 0%, #030712 100%)')" class="p-3 rounded-2xl bg-blue-950/40 border border-blue-500/40 text-left text-xs font-bold text-white">Cyber Blue</button>
+                        <button type="button" onclick="setThemePreset('#ec4899', '#f43f5e', 'radial-gradient(circle at 50% 20%, #29111c 0%, #0d0408 100%)')" class="p-3 rounded-2xl bg-pink-950/40 border border-pink-500/40 text-left text-xs font-bold text-white">Neon Pink</button>
+                        <button type="button" onclick="setThemePreset('#eab308', '#f97316', 'radial-gradient(circle at 50% 20%, #261c0c 0%, #0d0803 100%)')" class="p-3 rounded-2xl bg-amber-950/40 border border-amber-500/40 text-left text-xs font-bold text-white">Amber Gold</button>
                     </div>
                 </div>
 
-                <!-- TAB 6: SECURITY -->
                 <div id="tab-content-security" class="space-y-4 hidden">
-                    <div>
-                        <label class="block text-xs text-slate-300 mb-1">New Control Panel Password</label>
-                        <input type="password" id="edit-new-password" placeholder="Leave blank to keep current" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
-                    </div>
+                    <div><label class="block text-xs text-slate-300 mb-1">New Control Panel Password</label><input type="text" id="edit-new-password" placeholder="Leave blank to keep current" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white"></div>
                 </div>
             </div>
 
-            <!-- Modal Footer -->
             <div class="pt-4 border-t border-white/10 flex justify-end gap-3 mt-4">
-                <button onclick="toggleAdminPanel()" class="px-5 py-2.5 rounded-xl bg-white/5 text-slate-300 font-semibold text-sm hover:bg-white/10 transition">
-                    Cancel
-                </button>
-                <button onclick="saveAdminChanges()" class="px-6 py-2.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 font-bold text-sm shadow-[0_0_15px_var(--theme-glow)] hover:opacity-95 transition">
-                    Save Changes
-                </button>
+                <button type="button" onclick="toggleAdminPanel()" class="px-5 py-2.5 rounded-xl bg-white/5 text-slate-300 font-semibold text-sm">Cancel</button>
+                <button type="button" onclick="saveAdminChanges()" class="px-6 py-2.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 font-bold text-sm">Save Changes</button>
             </div>
         </div>
     </div>
 
-    <!-- MAIN APP SCRIPT & ENGINE -->
+    <!-- SCRIPT -->
     <script>
-        /* 强力同步版本号：每次在 GitHub 上修改 DEFAULT_CONFIG 时，修改此处的版本号，手机端就会强制自动刷新并同步加载最新配置！ */
-        const STORAGE_KEY = 'slime_space_sync_v7';
+        const STORAGE_KEY = 'slime_space_sync_v10';
 
-        // ==========================================
-        // 默认数据配置区 (可以直接在这里填入你的图床链接)
-        // ==========================================
         const DEFAULT_CONFIG = {
             password: 'slime123',
             name: 'Slime Master',
@@ -530,7 +429,6 @@
             document.documentElement.style.setProperty('--theme-glow', appData.themePrimary + '55');
             document.documentElement.style.setProperty('--theme-bg-gradient', appData.themeBgGradient);
 
-            // 主页背景
             const mainBgLayer = document.getElementById('main-bg-layer');
             if (appData.mainBg) {
                 mainBgLayer.style.backgroundImage = `url('${appData.mainBg}')`;
@@ -539,7 +437,6 @@
                 mainBgLayer.style.backgroundImage = 'none';
             }
 
-            // 欢迎页背景
             const splashScreen = document.getElementById('splash-screen');
             if (appData.welcomeBg) {
                 splashScreen.style.backgroundImage = `url('${appData.welcomeBg}')`;
@@ -555,7 +452,6 @@
             document.getElementById('user-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ${appData.status}`;
             document.getElementById('user-bio').innerText = appData.bio;
 
-            // 头像处理
             const avatarContainer = document.getElementById('avatar-img-container');
             const slimeFace = document.getElementById('avatar-slime-face');
             const avatarImg = document.getElementById('avatar-img');
@@ -568,13 +464,11 @@
                 slimeFace.classList.remove('hidden');
             }
 
-            // 渲染标签
             const tagsContainer = document.getElementById('user-tags');
             tagsContainer.innerHTML = appData.tags.map(tag => `
                 <span class="text-xs px-3 py-1 rounded-full bg-white/5 text-slate-300 border border-white/10 font-medium"># ${tag.trim()}</span>
             `).join('');
 
-            // 渲染社交链接
             const socialGrid = document.getElementById('social-grid');
             socialGrid.innerHTML = appData.links.map(link => `
                 <a href="${link.url}" target="_blank" class="glass-card rounded-2xl p-4 flex items-center justify-between group">
@@ -593,7 +487,6 @@
                 </a>
             `).join('');
 
-            // 渲染画廊
             const galleryGrid = document.getElementById('gallery-grid');
             galleryGrid.innerHTML = appData.gallery.map(item => `
                 <div class="glass-card rounded-2xl overflow-hidden group cursor-pointer" onclick="window.open('${item.url}', '_blank')">
@@ -611,7 +504,6 @@
             `).join('');
         }
 
-        // 进入主页
         function enterSite() {
             const splash = document.getElementById('splash-screen');
             const app = document.getElementById('app-content');
@@ -622,7 +514,6 @@
             }, 500);
         }
 
-        // 史莱姆弹跳与音效反馈
         function squishSplashSlime() {
             const slime = document.getElementById('splash-slime');
             slime.style.transform = 'scale(0.85) rotate(-3deg)';
@@ -643,7 +534,6 @@
             }
         }
 
-        // 隐藏暗号触发后台
         let clickCount = 0;
         let clickTimer = null;
         let typedKeys = '';
@@ -682,9 +572,8 @@
             document.getElementById('auth-modal').classList.add('hidden');
         }
 
-        function handleAuthSubmit(e) {
-            e.preventDefault();
-            const pass = document.getElementById('auth-password').value;
+        function handleAuthSubmit() {
+            const pass = document.getElementById('auth-password').value.trim();
             if (pass === appData.password) {
                 closeAuthModal();
                 openAdminPanel();
@@ -698,13 +587,11 @@
         }
 
         function toggleAdminPanel() {
-            const modal = document.getElementById('admin-modal');
-            modal.classList.toggle('hidden');
+            document.getElementById('admin-modal').classList.toggle('hidden');
         }
 
         function openAdminPanel() {
             toggleAdminPanel();
-            // 填充表单
             document.getElementById('edit-name').value = appData.name;
             document.getElementById('edit-title').value = appData.title;
             document.getElementById('edit-pronouns').value = appData.pronouns;
@@ -721,23 +608,17 @@
         }
 
         function switchTab(tabName) {
-            const tabs = ['profile', 'backgrounds', 'links', 'gallery', 'theme', 'security'];
-            tabs.forEach(t => {
+            ['profile', 'backgrounds', 'links', 'gallery', 'theme', 'security'].forEach(t => {
                 document.getElementById(`tab-content-${t}`).classList.add('hidden');
-                const btn = document.getElementById(`tab-btn-${t}`);
-                btn.className = "px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap";
+                document.getElementById(`tab-btn-${t}`).className = "px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap";
             });
             document.getElementById(`tab-content-${tabName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
-            activeBtn.className = "px-4 py-2 rounded-xl bg-[var(--theme-primary)] text-slate-950 flex items-center gap-2 whitespace-nowrap font-bold";
+            document.getElementById(`tab-btn-${tabName}`).className = "px-4 py-2 rounded-xl bg-[var(--theme-primary)] text-slate-950 flex items-center gap-2 whitespace-nowrap font-bold";
         }
 
         function resetBackgroundSettings(type) {
-            if (type === 'welcome') {
-                document.getElementById('edit-welcome-bg-url').value = '';
-            } else {
-                document.getElementById('edit-main-bg-url').value = '';
-            }
+            if (type === 'welcome') document.getElementById('edit-welcome-bg-url').value = '';
+            else document.getElementById('edit-main-bg-url').value = '';
         }
 
         function setThemePreset(primary, secondary, gradient) {
@@ -748,48 +629,29 @@
         }
 
         function renderAdminLists() {
-            // 渲染链接编辑表单
-            const linksList = document.getElementById('admin-links-list');
-            linksList.innerHTML = appData.links.map((link, idx) => `
+            document.getElementById('admin-links-list').innerHTML = appData.links.map((link, idx) => `
                 <div class="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center gap-3">
                     <input type="text" value="${link.name}" placeholder="Name" onchange="appData.links[${idx}].name=this.value" class="w-1/4 bg-black/50 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white">
                     <input type="text" value="${link.handle}" placeholder="Handle" onchange="appData.links[${idx}].handle=this.value" class="w-1/4 bg-black/50 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white">
                     <input type="url" value="${link.url}" placeholder="URL" onchange="appData.links[${idx}].url=this.value" class="flex-1 bg-black/50 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                    <button onclick="removeSocialLinkItem(${idx})" class="text-rose-400 hover:text-rose-300 px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                    <button type="button" onclick="removeSocialLinkItem(${idx})" class="text-rose-400 hover:text-rose-300 px-2 py-1"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
 
-            // 渲染画廊编辑表单
-            const galleryList = document.getElementById('admin-gallery-list');
-            galleryList.innerHTML = appData.gallery.map((item, idx) => `
+            document.getElementById('admin-gallery-list').innerHTML = appData.gallery.map((item, idx) => `
                 <div class="p-3 rounded-xl bg-black/40 border border-white/10 flex items-center gap-3">
                     <input type="text" value="${item.title}" placeholder="Title" onchange="appData.gallery[${idx}].title=this.value" class="w-1/4 bg-black/50 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white">
                     <input type="text" value="${item.tag}" placeholder="Tag" onchange="appData.gallery[${idx}].tag=this.value" class="w-1/4 bg-black/50 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white">
                     <input type="url" value="${item.url}" placeholder="Image URL" onchange="appData.gallery[${idx}].url=this.value" class="flex-1 bg-black/50 border border-white/10 rounded-lg px-2.5 py-1.5 text-xs text-white">
-                    <button onclick="removeGalleryItem(${idx})" class="text-rose-400 hover:text-rose-300 px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+                    <button type="button" onclick="removeGalleryItem(${idx})" class="text-rose-400 hover:text-rose-300 px-2 py-1"><i class="fa-solid fa-trash"></i></button>
                 </div>
             `).join('');
         }
 
-        function addSocialLinkItem() {
-            appData.links.push({ name: 'New Link', handle: '@handle', url: '#', icon: 'fa-solid fa-link' });
-            renderAdminLists();
-        }
-
-        function removeSocialLinkItem(idx) {
-            appData.links.splice(idx, 1);
-            renderAdminLists();
-        }
-
-        function addGalleryItem() {
-            appData.gallery.push({ title: 'New Artwork', tag: 'Illustration', url: '' });
-            renderAdminLists();
-        }
-
-        function removeGalleryItem(idx) {
-            appData.gallery.splice(idx, 1);
-            renderAdminLists();
-        }
+        function addSocialLinkItem() { appData.links.push({ name: 'New Link', handle: '@handle', url: '#', icon: 'fa-solid fa-link' }); renderAdminLists(); }
+        function removeSocialLinkItem(idx) { appData.links.splice(idx, 1); renderAdminLists(); }
+        function addGalleryItem() { appData.gallery.push({ title: 'New Artwork', tag: 'Illustration', url: '' }); renderAdminLists(); }
+        function removeGalleryItem(idx) { appData.gallery.splice(idx, 1); renderAdminLists(); }
 
         function saveAdminChanges() {
             appData.name = document.getElementById('edit-name').value;
@@ -802,31 +664,23 @@
             appData.welcomeBg = document.getElementById('edit-welcome-bg-url').value;
             appData.mainBg = document.getElementById('edit-main-bg-url').value;
 
-            const newPass = document.getElementById('edit-new-password').value;
-            if (newPass.trim() !== '') {
-                appData.password = newPass.trim();
-            }
+            const newPass = document.getElementById('edit-new-password').value.trim();
+            if (newPass !== '') appData.password = newPass;
 
             saveAppData();
             toggleAdminPanel();
         }
 
-        // Background Fluid Canvas Animation
         const canvas = document.getElementById('slime-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
         class Particle {
-            constructor() {
-                this.reset();
-            }
+            constructor() { this.reset(); }
             reset() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
@@ -836,8 +690,7 @@
                 this.alpha = Math.random() * 0.3 + 0.15;
             }
             update() {
-                this.x += this.vx;
-                this.y += this.vy;
+                this.x += this.vx; this.y += this.vy;
                 if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
                 if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
             }
@@ -850,18 +703,13 @@
         }
 
         for (let i = 0; i < 22; i++) particles.push(new Particle());
-
         function animateCanvas() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animateCanvas);
         }
         animateCanvas();
 
-        // 页面初始化加载
         loadAppData();
         renderUI();
     </script>
