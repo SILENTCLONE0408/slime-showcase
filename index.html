@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slime Space - Cute & Cool Persona Showcase</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        slime: {
+                            green: '#10b981',
+                            cyan: '#06b6d4',
+                            purple: '#a855f7',
+                            pink: '#ec4899',
+                            dark: '#0f0a1c',
+                            card: '#1a1333'
+                        }
+                    },
+                    animation: {
+                        'slime-wobble': 'wobble 4s ease-in-out infinite',
+                        'float': 'float 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        wobble: {
+                            '0%, 100%': { borderRadius: '60% 40% 30% 70% / 60% 30% 70% 40%' },
+                            '50%': { borderRadius: '30% 60% 70% 30% / 50% 60% 30% 60%' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translate3d(0, 0px, 0)' },
+                            '50%': { transform: 'translate3d(0, -8px, 0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --theme-primary: #10b981;
+            --theme-secondary: #06b6d4;
+            --theme-glow: rgba(16, 185, 129, 0.35);
+            --theme-bg-gradient: radial-gradient(circle at 50% 20%, #11221c 0%, #060e0a 100%);
+        }
+
+        /* HARDWARE ACCELERATION & HIGH PERFORMANCE DEFAULTS */
+        *, ::before, ::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--theme-bg-gradient);
+            color: #f3f4f6;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transform: translateZ(0); /* Force GPU Layer */
+        }
+
+        /* Optimized Hardware Accelerated Layers */
+        .hw-accel {
+            transform: translate3d(0,0,0);
+            backface-visibility: hidden;
+            perspective: 1000px;
+            will-change: transform, opacity;
+        }
+
+        /* Glassmorphism Panels (Optimized for 60FPS) */
+        .glass-panel {
+            background: rgba(20, 15, 38, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-card {
+            background: rgba(30, 22, 56, 0.55);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        background-color 0.25s ease, 
+                        border-color 0.25s ease, 
+                        box-shadow 0.25s ease;
+            will-change: transform, background-color;
+        }
+
+        .glass-card:hover {
+            background: rgba(42, 31, 80, 0.75);
+            border-color: var(--theme-primary);
+            transform: translate3d(0, -4px, 0);
+            box-shadow: 0 10px 20px -5px var(--theme-glow);
+        }
+
+        /* Optimized Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #060e0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1a2f26;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--theme-primary);
+        }
+
+        /* Fast keyframe animations */
+        @keyframes shake {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            20%, 60% { transform: translate3d(-8px, 0, 0); }
+            40%, 80% { transform: translate3d(8px, 0, 0); }
+        }
+        .animate-shake {
+            animation: shake 0.35s ease-in-out;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen flex flex-col justify-between">
+
+    <!-- MAIN PAGE BACKGROUND LAYER (GPU accelerated) -->
+    <div id="main-bg-layer" class="fixed inset-0 z-0 bg-cover bg-center pointer-events-none hw-accel transition-opacity duration-500"></div>
+
+    <!-- Interactive Canvas Background (Low-cost 60FPS) -->
+    <canvas id="slime-canvas" class="fixed inset-0 pointer-events-none z-10 hw-accel"></canvas>
+
+    <!-- 1. ENTRANCE / SPLASH SCREEN -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#0a0614] bg-cover bg-center transition-opacity duration-500 hw-accel">
+        <!-- Overlay -->
+        <div id="splash-overlay" class="absolute inset-0 bg-black/65 backdrop-blur-sm pointer-events-none transition-all duration-300"></div>
+
+        <div class="relative z-10 flex flex-col items-center text-center p-6">
+            <!-- Big Cute Slime Avatar -->
+            <div id="splash-slime" class="w-40 h-40 md:w-44 md:h-44 rounded-full bg-gradient-to-tr from-[var(--theme-primary)] to-[var(--theme-secondary)] animate-slime-wobble flex items-center justify-center shadow-[0_0_40px_var(--theme-glow)] cursor-pointer transform hover:scale-105 active:scale-95 transition-transform duration-200 mb-8 hw-accel" onclick="squishSplashSlime()">
+                <div class="relative w-full h-full flex items-center justify-center pointer-events-none">
+                    <!-- Eyes -->
+                    <div class="absolute top-12 left-9 w-6 h-8 bg-black rounded-full flex items-center justify-center border border-white/20">
+                        <div class="w-2.5 h-2.5 bg-white rounded-full absolute top-1 left-1"></div>
+                    </div>
+                    <div class="absolute top-12 right-9 w-6 h-8 bg-black rounded-full flex items-center justify-center border border-white/20">
+                        <div class="w-2.5 h-2.5 bg-white rounded-full absolute top-1 left-1"></div>
+                    </div>
+                    <!-- Cute Mouth -->
+                    <div class="absolute top-20 w-7 h-3 border-b-4 border-black rounded-full"></div>
+                    <!-- Cheeks -->
+                    <div class="absolute top-16 left-4 w-4 h-2 bg-pink-400/60 rounded-full blur-[1px]"></div>
+                    <div class="absolute top-16 right-4 w-4 h-2 bg-pink-400/60 rounded-full blur-[1px]"></div>
+                </div>
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-fredoka font-bold text-white mb-3 tracking-wide drop-shadow-md">
+                Welcome to <span class="text-[var(--theme-primary)]">Slime Space</span>
+            </h1>
+            <p class="text-slate-300 text-sm md:text-base max-w-sm mb-8 font-sans drop-shadow-sm">
+                Cute & Cool Interactive Persona World
+            </p>
+
+            <button onclick="enterSite()" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] text-slate-950 font-bold font-fredoka text-lg shadow-[0_0_20px_var(--theme-glow)] hover:opacity-95 active:scale-95 transition-all flex items-center gap-2">
+                <span>Enter World</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div id="app-content" class="relative z-20 max-w-4xl mx-auto px-4 py-6 w-full opacity-0 transition-opacity duration-500 hw-accel">
+        
+        <!-- HEADER / NAVIGATION BAR -->
+        <header class="w-full flex justify-between items-center mb-8 glass-panel rounded-2xl p-4">
+            <!-- Secret Trigger 1: Triple-click Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer select-none" onclick="handleSecretClick(event)">
+                <div class="w-10 h-10 rounded-full bg-[var(--theme-primary)] flex items-center justify-center text-slate-950 font-bold font-fredoka shadow-[0_0_12px_var(--theme-glow)]">
+                    <i class="fa-solid fa-spaghetti-monster-flying text-xl"></i>
+                </div>
+                <div>
+                    <span id="nav-brand" class="font-fredoka text-lg font-bold text-white tracking-wide">Slime Space</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-[var(--theme-primary)]/20 text-[var(--theme-primary)] border border-[var(--theme-primary)]/40 ml-2 font-mono">v3.8 Ultra Pro</span>
+                </div>
+            </div>
+
+            <!-- Secret Trigger 3: Invisible Hotspot in Top Right -->
+            <div onclick="requestAdminAccess()" class="w-8 h-8 opacity-0 hover:opacity-20 cursor-pointer flex items-center justify-center rounded-full transition" title="Hotspot">
+                <i class="fa-solid fa-key text-xs text-white"></i>
+            </div>
+        </header>
+
+        <!-- 2. HERO PROFILE SECTION -->
+        <section class="glass-panel rounded-3xl p-6 md:p-10 mb-8 relative overflow-hidden">
+            <!-- Subtle Glow Blob -->
+            <div class="absolute -top-20 -right-20 w-64 h-64 bg-[var(--theme-primary)] opacity-10 blur-2xl rounded-full pointer-events-none"></div>
+
+            <div class="flex flex-col md:flex-row items-center gap-8 relative z-10">
+                
+                <!-- Slime Mascot / Custom Avatar Hero (Secret Trigger 2: Triple-click Avatar) -->
+                <div class="relative group cursor-pointer" onclick="handleAvatarInteraction(event)">
+                    <div id="hero-avatar-slime" class="w-40 h-40 md:w-48 md:h-48 rounded-full bg-gradient-to-tr from-[var(--theme-primary)] via-[var(--theme-secondary)] to-purple-600 animate-slime-wobble flex items-center justify-center shadow-[0_0_35px_var(--theme-glow)] transition-transform duration-200 relative hw-accel">
+                        
+                        <!-- Image Avatar Container -->
+                        <div id="avatar-img-container" class="absolute inset-2 rounded-full overflow-hidden border-2 border-white/20 hidden">
+                            <img id="avatar-img" src="" alt="Avatar" class="w-full h-full object-cover">
+                        </div>
+
+                        <!-- Procedural Slime Face -->
+                        <div id="avatar-slime-face" class="w-full h-full relative flex items-center justify-center pointer-events-none">
+                            <div class="absolute top-14 left-10 md:left-12 w-6 h-8 bg-black rounded-full flex items-center justify-center overflow-hidden border border-[var(--theme-primary)]/50">
+                                <div class="w-2.5 h-2.5 bg-white rounded-full absolute top-1 left-1"></div>
+                            </div>
+                            <div class="absolute top-14 right-10 md:right-12 w-6 h-8 bg-black rounded-full flex items-center justify-center overflow-hidden border border-[var(--theme-primary)]/50">
+                                <div class="w-2.5 h-2.5 bg-white rounded-full absolute top-1 left-1"></div>
+                            </div>
+                            <div class="absolute top-24 w-8 h-3 border-b-4 border-black rounded-full"></div>
+                            <div class="absolute top-18 left-6 w-4 h-2 bg-pink-500/50 rounded-full blur-[1px]"></div>
+                            <div class="absolute top-18 right-6 w-4 h-2 bg-pink-500/50 rounded-full blur-[1px]"></div>
+                        </div>
+
+                        <!-- Crown Badge -->
+                        <div class="absolute -top-2 right-2 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 px-2.5 py-0.5 rounded-full text-xs font-bold font-fredoka shadow-lg">
+                            <i class="fa-solid fa-crown mr-1"></i> OC VIP
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <span class="text-xs text-slate-400 bg-black/40 px-3 py-1 rounded-full border border-white/10">
+                            <i class="fa-solid fa-hand-sparkles mr-1 text-[var(--theme-primary)]"></i> Click to Squish!
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Info Section -->
+                <div class="flex-1 text-center md:text-left space-y-4">
+                    <div>
+                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1">
+                            <h1 id="user-name" class="text-3xl md:text-4xl font-fredoka font-bold text-white tracking-wide">Slime Master</h1>
+                            <span id="user-pronouns" class="text-xs font-mono bg-white/10 text-slate-300 px-2.5 py-1 rounded-full border border-white/10">They/Them</span>
+                            <span id="user-status" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                Online & Gaming
+                            </span>
+                        </div>
+                        <p id="user-title" class="text-base font-semibold text-[var(--theme-primary)]">Creative Digital Artist & Gamer</p>
+                    </div>
+
+                    <p id="user-bio" class="text-slate-300 text-sm md:text-base leading-relaxed bg-black/20 p-4 rounded-2xl border border-white/5">
+                        Hello! Welcome to my personal slime cozy space. I love digital painting, VRChat world exploration, and creating cute character designs. Feel free to connect!
+                    </p>
+
+                    <!-- Tags -->
+                    <div id="user-tags" class="flex flex-wrap items-center justify-center md:justify-start gap-2 pt-1">
+                        <!-- Dynamic Tags -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SOCIAL LINKS GRID -->
+        <section class="glass-panel rounded-3xl p-6 md:p-8 mb-8">
+            <div class="mb-6">
+                <h2 class="text-2xl font-fredoka font-bold text-white flex items-center">
+                    <i class="fa-solid fa-compass text-[var(--theme-primary)] mr-2.5"></i> Social Networks & Links
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Connect with me across the web</p>
+            </div>
+
+            <!-- Social Cards Grid -->
+            <div id="social-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Dynamic Link Cards -->
+            </div>
+        </section>
+
+        <!-- 4. GALLERY SHOWCASE SECTION -->
+        <section class="glass-panel rounded-3xl p-6 md:p-8 mb-8">
+            <div class="mb-6">
+                <h2 class="text-2xl font-fredoka font-bold text-white flex items-center">
+                    <i class="fa-solid fa-images text-[var(--theme-primary)] mr-2.5"></i> Persona Showcase & Gallery
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Character artwork, screenshots and creative collections</p>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                <!-- Dynamic Gallery Cards -->
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 5. PASSWORD SECURITY AUTH MODAL -->
+    <div id="auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 hw-accel">
+        <div id="auth-card" class="glass-panel w-full max-w-md rounded-3xl p-6 border border-white/10 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-2xl bg-[var(--theme-primary)]/20 border border-[var(--theme-primary)] text-[var(--theme-primary)] flex items-center justify-center text-2xl mx-auto mb-3 shadow-[0_0_20px_var(--theme-glow)]">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <h3 class="text-2xl font-fredoka font-bold text-white">Owner Verification</h3>
+                <p class="text-xs text-slate-400 mt-1">Enter password to access the Control Panel</p>
+            </div>
+
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
+                    <div class="relative">
+                        <input type="password" id="auth-password" required placeholder="Enter password..." class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition pl-10">
+                        <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
+                    </div>
+                    <p id="auth-error" class="text-xs text-rose-400 mt-1.5 hidden flex items-center gap-1">
+                        <i class="fa-solid fa-circle-exclamation"></i> Incorrect password. Default is: <span class="font-mono underline">slime123</span>
+                    </p>
+                </div>
+
+                <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] text-slate-950 font-bold font-fredoka text-base shadow-[0_0_15px_var(--theme-glow)] hover:opacity-95 transition">
+                    Unlock Admin Panel
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 6. ADMIN CONTROL PANEL MODAL -->
+    <div id="admin-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto hw-accel">
+        <div class="glass-panel w-full max-w-3xl rounded-3xl p-6 border border-white/10 my-auto max-h-[90vh] flex flex-col">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between pb-4 border-b border-white/10">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-[var(--theme-primary)] text-slate-950 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-sliders text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-fredoka font-bold text-white">Slime Control Panel</h3>
+                        <p class="text-xs text-slate-400">Manage profile info, backgrounds, links, theme & security</p>
+                    </div>
+                </div>
+                <button onclick="toggleAdminPanel()" class="text-slate-400 hover:text-white w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Navigation Tabs -->
+            <div class="flex border-b border-white/10 my-4 gap-2 overflow-x-auto pb-2 text-sm font-semibold">
+                <button onclick="switchTab('profile')" id="tab-btn-profile" class="px-4 py-2 rounded-xl bg-[var(--theme-primary)] text-slate-950 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-user"></i> Profile Info
+                </button>
+                <button onclick="switchTab('backgrounds')" id="tab-btn-backgrounds" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-image"></i> Backgrounds
+                </button>
+                <button onclick="switchTab('links')" id="tab-btn-links" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-link"></i> Social Links
+                </button>
+                <button onclick="switchTab('gallery')" id="tab-btn-gallery" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-images"></i> Gallery
+                </button>
+                <button onclick="switchTab('theme')" id="tab-btn-theme" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-palette"></i> Theme
+                </button>
+                <button onclick="switchTab('security')" id="tab-btn-security" class="px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap">
+                    <i class="fa-solid fa-key"></i> Security
+                </button>
+            </div>
+
+            <!-- Tab Contents Container -->
+            <div class="flex-1 overflow-y-auto pr-1 space-y-4">
+                
+                <!-- TAB 1: PROFILE INFO -->
+                <div id="tab-content-profile" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1">Display Name</label>
+                            <input type="text" id="edit-name" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1">Title / Subtitle</label>
+                            <input type="text" id="edit-title" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1">Pronouns</label>
+                            <input type="text" id="edit-pronouns" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1">Status Message</label>
+                            <input type="text" id="edit-status" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Custom Image Avatar URL (Optional, leave blank for animated slime)</label>
+                        <input type="url" id="edit-avatar-url" placeholder="https://..." class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Bio Description</label>
+                        <textarea id="edit-bio" rows="3" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1">Tags (Comma separated)</label>
+                        <input type="text" id="edit-tags" placeholder="Gamer, Illustrator, VRChat" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
+                    </div>
+                </div>
+
+                <!-- TAB 2: BACKGROUND SETTINGS -->
+                <div id="tab-content-backgrounds" class="space-y-6 hidden">
+                    
+                    <!-- Welcome Screen Background Section -->
+                    <div class="p-4 rounded-2xl bg-black/30 border border-white/10 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-door-open text-[var(--theme-primary)]"></i> Welcome / Splash Screen Background
+                            </h4>
+                            <button onclick="resetBackgroundSettings('welcome')" class="text-xs text-slate-400 hover:text-rose-300 transition">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset
+                            </button>
+                        </div>
+
+                        <!-- Presets -->
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-2">Preset Themes</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                <button onclick="setBgPreset('welcome', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&auto=format&fit=crop&q=80')" class="p-2 rounded-xl bg-black/50 border border-white/10 text-xs text-slate-300 hover:border-[var(--theme-primary)] transition flex flex-col items-center gap-1">
+                                    <span class="w-full h-8 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200&auto=format&fit=crop&q=80')"></span>
+                                    Slime Forest
+                                </button>
+                                <button onclick="setBgPreset('welcome', 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1200&auto=format&fit=crop&q=80')" class="p-2 rounded-xl bg-black/50 border border-white/10 text-xs text-slate-300 hover:border-[var(--theme-primary)] transition flex flex-col items-center gap-1">
+                                    <span class="w-full h-8 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=200&auto=format&fit=crop&q=80')"></span>
+                                    Cyber Neon
+                                </button>
+                                <button onclick="setBgPreset('welcome', 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&auto=format&fit=crop&q=80')" class="p-2 rounded-xl bg-black/50 border border-white/10 text-xs text-slate-300 hover:border-[var(--theme-primary)] transition flex flex-col items-center gap-1">
+                                    <span class="w-full h-8 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=200&auto=format&fit=crop&q=80')"></span>
+                                    Aurora Crystal
+                                </button>
+                                <button onclick="setBgPreset('welcome', 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&auto=format&fit=crop&q=80')" class="p-2 rounded-xl bg-black/50 border border-white/10 text-xs text-slate-300 hover:border-[var(--theme-primary)] transition flex flex-col items-center gap-1">
+                                    <span class="w-full h-8 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=200&auto=format&fit=crop&q=80')"></span>
+                                    Deep Void
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- URL or File Upload -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">Image URL</label>
+                                <input type="url" id="edit-welcome-bg-url" placeholder="https://..." oninput="updateLiveBgPreview('welcome')" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">Upload Local Image</label>
+                                <input type="file" accept="image/*" onchange="handleFileUpload(event, 'welcome')" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[var(--theme-primary)] file:text-slate-950 hover:file:opacity-90">
+                            </div>
+                        </div>
+
+                        <!-- Opacity / Blur Adjustments -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <span>Background Overlay Opacity</span>
+                                    <span id="welcome-opacity-val">0.6</span>
+                                </div>
+                                <input type="range" id="edit-welcome-opacity" min="0" max="1" step="0.05" value="0.6" oninput="updateLiveBgPreview('welcome')" class="w-full accent-[var(--theme-primary)]">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <span>Background Blur Strength</span>
+                                    <span id="welcome-blur-val">4px</span>
+                                </div>
+                                <input type="range" id="edit-welcome-blur" min="0" max="20" step="1" value="4" oninput="updateLiveBgPreview('welcome')" class="w-full accent-[var(--theme-primary)]">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Page Background Section -->
+                    <div class="p-4 rounded-2xl bg-black/30 border border-white/10 space-y-4">
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-desktop text-[var(--theme-primary)]"></i> Main Page Background Overlay
+                            </h4>
+                            <button onclick="resetBackgroundSettings('main')" class="text-xs text-slate-400 hover:text-rose-300 transition">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset
+                            </button>
+                        </div>
+
+                        <!-- Presets -->
+                        <div>
+                            <label class="block text-xs text-slate-400 mb-2">Preset Themes</label>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                <button onclick="setBgPreset('main', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&auto=format&fit=crop&q=80')" class="p-2 rounded-xl bg-black/50 border border-white/10 text-xs text-slate-300 hover:border-[var(--theme-primary)] transition flex flex-col items-center gap-1">
+                                    <span class="w-full h-8 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=200&auto=format&fit=crop&q=80')"></span>
+                                    Slime Forest
+                                </button>
+                                <button onclick="setBgPreset('main', 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=1200&auto=format&fit=crop&q=80')" class="p-2 rounded-xl bg-black/50 border border-white/10 text-xs text-slate-300 hover:border-[var(--theme-primary)] transition flex flex-col items-center gap-1">
+                                    <span class="w-full h-8 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=200&auto=format&fit=crop&q=80')"></span>
+                                    Cyber Neon
+                                </button>
+                                <button onclick="setBgPreset('main', 'https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&auto=format&fit=crop&q=80')" class="p-2 rounded-xl bg-black/50 border border-white/10 text-xs text-slate-300 hover:border-[var(--theme-primary)] transition flex flex-col items-center gap-1">
+                                    <span class="w-full h-8 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?w=200&auto=format&fit=crop&q=80')"></span>
+                                    Aurora Crystal
+                                </button>
+                                <button onclick="setBgPreset('main', 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=1200&auto=format&fit=crop&q=80')" class="p-2 rounded-xl bg-black/50 border border-white/10 text-xs text-slate-300 hover:border-[var(--theme-primary)] transition flex flex-col items-center gap-1">
+                                    <span class="w-full h-8 rounded-lg bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=200&auto=format&fit=crop&q=80')"></span>
+                                    Deep Void
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- URL or File Upload -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">Image URL</label>
+                                <input type="url" id="edit-main-bg-url" placeholder="https://..." oninput="updateLiveBgPreview('main')" class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-slate-300 mb-1">Upload Local Image</label>
+                                <input type="file" accept="image/*" onchange="handleFileUpload(event, 'main')" class="w-full text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[var(--theme-primary)] file:text-slate-950 hover:file:opacity-90">
+                            </div>
+                        </div>
+
+                        <!-- Opacity / Blur Adjustments -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <span>Background Image Opacity</span>
+                                    <span id="main-opacity-val">0.2</span>
+                                </div>
+                                <input type="range" id="edit-main-opacity" min="0" max="1" step="0.05" value="0.2" oninput="updateLiveBgPreview('main')" class="w-full accent-[var(--theme-primary)]">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs text-slate-300 mb-1">
+                                    <span>Background Blur Strength</span>
+                                    <span id="main-blur-val">2px</span>
+                                </div>
+                                <input type="range" id="edit-main-blur" min="0" max="20" step="1" value="2" oninput="updateLiveBgPreview('main')" class="w-full accent-[var(--theme-primary)]">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TAB 3: SOCIAL LINKS -->
+                <div id="tab-content-links" class="space-y-4 hidden">
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-sm font-bold text-white">Manage Social Cards</h4>
+                        <button onclick="addNewLinkItem()" class="px-3 py-1.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 text-xs font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> Add Link
+                        </button>
+                    </div>
+                    <div id="admin-links-list" class="space-y-3">
+                        <!-- Dynamic Editable Link Entries -->
+                    </div>
+                </div>
+
+                <!-- TAB 4: GALLERY -->
+                <div id="tab-content-gallery" class="space-y-4 hidden">
+                    <div class="flex justify-between items-center">
+                        <h4 class="text-sm font-bold text-white">Manage Showcase Gallery</h4>
+                        <button onclick="addNewGalleryItem()" class="px-3 py-1.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 text-xs font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-plus"></i> Add Card
+                        </button>
+                    </div>
+                    <div id="admin-gallery-list" class="space-y-3">
+                        <!-- Dynamic Editable Gallery Entries -->
+                    </div>
+                </div>
+
+                <!-- TAB 5: THEME SWITCHER -->
+                <div id="tab-content-theme" class="space-y-4 hidden">
+                    <h4 class="text-sm font-bold text-white mb-2">Select Theme Style</h4>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="applyTheme('emerald')" class="p-3 rounded-2xl border border-emerald-500/40 bg-emerald-950/40 text-emerald-400 font-bold text-xs flex flex-col items-center gap-2 hover:scale-105 transition">
+                            <span class="w-8 h-8 rounded-full bg-emerald-500"></span>
+                            Emerald Slime
+                        </button>
+                        <button onclick="applyTheme('crystal')" class="p-3 rounded-2xl border border-cyan-500/40 bg-cyan-950/40 text-cyan-400 font-bold text-xs flex flex-col items-center gap-2 hover:scale-105 transition">
+                            <span class="w-8 h-8 rounded-full bg-cyan-500"></span>
+                            Crystal Ice
+                        </button>
+                        <button onclick="applyTheme('violet')" class="p-3 rounded-2xl border border-purple-500/40 bg-purple-950/40 text-purple-400 font-bold text-xs flex flex-col items-center gap-2 hover:scale-105 transition">
+                            <span class="w-8 h-8 rounded-full bg-purple-500"></span>
+                            Arcane Violet
+                        </button>
+                        <button onclick="applyTheme('pink')" class="p-3 rounded-2xl border border-pink-500/40 bg-pink-950/40 text-pink-400 font-bold text-xs flex flex-col items-center gap-2 hover:scale-105 transition">
+                            <span class="w-8 h-8 rounded-full bg-pink-500"></span>
+                            Neon Pink
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TAB 6: SECURITY & RESET -->
+                <div id="tab-content-security" class="space-y-4 hidden">
+                    <div class="p-4 rounded-2xl bg-black/30 border border-white/10 space-y-3">
+                        <h4 class="text-sm font-bold text-white">Change Owner Password</h4>
+                        <div>
+                            <label class="block text-xs text-slate-300 mb-1">New Access Password</label>
+                            <input type="password" id="edit-password" placeholder="Enter new password..." class="w-full bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)]">
+                        </div>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-rose-950/20 border border-rose-500/30 space-y-2">
+                        <h4 class="text-sm font-bold text-rose-300">Danger Zone</h4>
+                        <p class="text-xs text-slate-400">Reset all configuration data back to initial defaults.</p>
+                        <button onclick="resetToDefaults()" class="px-4 py-2 rounded-xl bg-rose-600/80 hover:bg-rose-600 text-white text-xs font-bold transition">
+                            <i class="fa-solid fa-rotate-left mr-1"></i> Reset All Data
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer Controls -->
+            <div class="pt-4 border-t border-white/10 flex justify-end gap-3 mt-auto">
+                <button onclick="toggleAdminPanel()" class="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-semibold transition">
+                    Cancel
+                </button>
+                <button onclick="saveAdminChanges()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[var(--theme-primary)] to-[var(--theme-secondary)] text-slate-950 font-bold font-fredoka text-sm shadow-[0_0_15px_var(--theme-glow)] hover:opacity-95 transition">
+                    Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GALLERY LIGHTBOX MODAL -->
+    <div id="gallery-lightbox" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden flex items-center justify-center p-4 hw-accel" onclick="closeLightbox()">
+        <div class="relative max-w-3xl w-full text-center" onclick="event.stopPropagation()">
+            <button onclick="closeLightbox()" class="absolute -top-10 right-0 text-white/80 hover:text-white text-2xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <img id="lightbox-img" src="" alt="Enlarged Art" class="max-h-[80vh] mx-auto rounded-2xl border border-white/20 shadow-2xl object-contain">
+            <h3 id="lightbox-title" class="text-lg font-fredoka font-bold text-white mt-4"></h3>
+            <p id="lightbox-desc" class="text-xs text-slate-400 mt-1"></p>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl glass-panel border border-white/20 text-white text-sm font-semibold shadow-2xl flex items-center gap-2 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-300 hw-accel">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-[var(--theme-primary)] text-lg"></i>
+        <span id="toast-msg">Message</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC (ULTRA HIGH PERFORMANCE 60FPS) -->
+    <script>
+        // DEFAULT INITIAL DATA
+        const DEFAULT_DATA = {
+            password: 'slime123',
+            theme: 'emerald',
+            profile: {
+                name: "Slime Friend",
+                title: "Creative Digital Creator & Gamer",
+                pronouns: "They/Them",
+                status: "Online & Vibing",
+                bio: "Welcome to my interactive persona hub! I create digital illustrations, explore virtual worlds, and enjoy cozy aesthetic vibes. Feel free to explore my links and artwork!",
+                avatarUrl: "",
+                tags: ["Digital Artist", "VRChat", "Gamer", "Slime Lover"]
+            },
+            backgrounds: {
+                welcome: {
+                    url: "",
+                    opacity: 0.6,
+                    blur: 4
+                },
+                main: {
+                    url: "",
+                    opacity: 0.2,
+                    blur: 2
+                }
+            },
+            links: [
+                { id: '1', title: 'Bilibili', handle: '@SlimeCreative', icon: 'fa-brands fa-bilibili', url: 'https://bilibili.com', color: 'text-sky-400' },
+                { id: '2', title: 'X / Twitter', handle: '@SlimePersona', icon: 'fa-brands fa-x-twitter', url: 'https://twitter.com', color: 'text-slate-200' },
+                { id: '3', title: 'VRChat', handle: 'SlimeWorld#123', icon: 'fa-solid fa-vr-cardboard', url: 'https://vrchat.com', color: 'text-cyan-400' },
+                { id: '4', title: 'Discord Community', handle: 'discord.gg/slime', icon: 'fa-brands fa-discord', url: 'https://discord.com', color: 'text-indigo-400' },
+                { id: '5', title: 'ArtStation', handle: 'SlimeArt', icon: 'fa-brands fa-artstation', url: 'https://artstation.com', color: 'text-blue-400' },
+                { id: '6', title: 'Email Contact', handle: 'friend@slime.space', icon: 'fa-solid fa-envelope', url: 'mailto:friend@slime.space', color: 'text-emerald-400' }
+            ],
+            gallery: [
+                { id: 'g1', title: 'Slime Mascot Concept', desc: 'Cute glow slime illustration', image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80' },
+                { id: 'g2', title: 'Cyber World Sky', desc: 'VRChat aesthetic world screenshot', image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?w=600&auto=format&fit=crop&q=80' },
+                { id: 'g3', title: 'Neon Persona Avatar', desc: 'Character profile concept artwork', image: 'https://images.unsplash.com/photo-1563089145-599997674d42?w=600&auto=format&fit=crop&q=80' }
+            ]
+        };
+
+        let state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        let isAuthenticated = false;
+
+        // THEME DEFINITIONS
+        const THEMES = {
+            emerald: { primary: '#10b981', secondary: '#06b6d4', glow: 'rgba(16, 185, 129, 0.35)', bg: 'radial-gradient(circle at 50% 20%, #11221c 0%, #060e0a 100%)' },
+            crystal: { primary: '#06b6d4', secondary: '#3b82f6', glow: 'rgba(6, 182, 212, 0.35)', bg: 'radial-gradient(circle at 50% 20%, #0c2133 0%, #050b14 100%)' },
+            violet: { primary: '#a855f7', secondary: '#ec4899', glow: 'rgba(168, 85, 247, 0.35)', bg: 'radial-gradient(circle at 50% 20%, #1e1338 0%, #0b0716 100%)' },
+            pink: { primary: '#ec4899', secondary: '#f43f5e', glow: 'rgba(236, 72, 153, 0.35)', bg: 'radial-gradient(circle at 50% 20%, #311124 0%, #12050d 100%)' }
+        };
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            loadState();
+            initCanvas();
+            renderProfile();
+            renderLinks();
+            renderGallery();
+            renderBackgrounds();
+            applyTheme(state.theme || 'emerald', false);
+            setupKeyboardShortcuts();
+        });
+
+        // LOCAL STORAGE LOAD/SAVE
+        function loadState() {
+            const saved = localStorage.getItem('slime_persona_data');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    state = { 
+                        ...DEFAULT_DATA, 
+                        ...parsed,
+                        backgrounds: { ...DEFAULT_DATA.backgrounds, ...(parsed.backgrounds || {}) }
+                    };
+                } catch(e) {
+                    state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                }
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem('slime_persona_data', JSON.stringify(state));
+        }
+
+        // OPTIMIZED BACKGROUNDS RENDER
+        function renderBackgrounds() {
+            requestAnimationFrame(() => {
+                const splashEl = document.getElementById('splash-screen');
+                const splashOverlay = document.getElementById('splash-overlay');
+                const welcomeBg = state.backgrounds?.welcome;
+
+                if (welcomeBg && welcomeBg.url) {
+                    splashEl.style.backgroundImage = `url('${welcomeBg.url}')`;
+                } else {
+                    splashEl.style.backgroundImage = 'none';
+                }
+                if (splashOverlay) {
+                    splashOverlay.style.backgroundColor = `rgba(0, 0, 0, ${welcomeBg?.opacity ?? 0.6})`;
+                    splashOverlay.style.backdropFilter = `blur(${welcomeBg?.blur ?? 4}px)`;
+                }
+
+                const mainBgLayer = document.getElementById('main-bg-layer');
+                const mainBg = state.backgrounds?.main;
+
+                if (mainBgLayer) {
+                    if (mainBg && mainBg.url) {
+                        mainBgLayer.style.backgroundImage = `url('${mainBg.url}')`;
+                        mainBgLayer.style.opacity = mainBg.opacity ?? 0.2;
+                        mainBgLayer.style.filter = `blur(${mainBg.blur ?? 2}px)`;
+                    } else {
+                        mainBgLayer.style.backgroundImage = 'none';
+                    }
+                }
+            });
+        }
+
+        function setBgPreset(type, url) {
+            document.getElementById(`edit-${type}-bg-url`).value = url;
+            updateLiveBgPreview(type);
+            showToast(`Preset image set for ${type === 'welcome' ? 'Welcome Screen' : 'Main Page'}`);
+        }
+
+        function handleFileUpload(e, type) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const base64Url = evt.target.result;
+                    document.getElementById(`edit-${type}-bg-url`).value = base64Url;
+                    updateLiveBgPreview(type);
+                    showToast(`Local image loaded for ${type === 'welcome' ? 'Welcome Screen' : 'Main Page'}`);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function updateLiveBgPreview(type) {
+            const url = document.getElementById(`edit-${type}-bg-url`).value;
+            const opacity = parseFloat(document.getElementById(`edit-${type}-opacity`).value);
+            const blur = parseInt(document.getElementById(`edit-${type}-blur`).value);
+
+            document.getElementById(`${type}-opacity-val`).textContent = opacity;
+            document.getElementById(`${type}-blur-val`).textContent = blur + 'px';
+
+            if (!state.backgrounds[type]) state.backgrounds[type] = {};
+            state.backgrounds[type].url = url;
+            state.backgrounds[type].opacity = opacity;
+            state.backgrounds[type].blur = blur;
+
+            renderBackgrounds();
+        }
+
+        function resetBackgroundSettings(type) {
+            if (DEFAULT_DATA.backgrounds[type]) {
+                state.backgrounds[type] = { ...DEFAULT_DATA.backgrounds[type] };
+                document.getElementById(`edit-${type}-bg-url`).value = state.backgrounds[type].url;
+                document.getElementById(`edit-${type}-opacity`).value = state.backgrounds[type].opacity;
+                document.getElementById(`edit-${type}-blur`).value = state.backgrounds[type].blur;
+                document.getElementById(`${type}-opacity-val`).textContent = state.backgrounds[type].opacity;
+                document.getElementById(`${type}-blur-val`).textContent = state.backgrounds[type].blur + 'px';
+                renderBackgrounds();
+                showToast(`Reset ${type} background settings.`);
+            }
+        }
+
+        // ENTRANCE SPLASH SCREEN
+        function enterSite() {
+            const splash = document.getElementById('splash-screen');
+            const app = document.getElementById('app-content');
+            
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.classList.add('hidden');
+                app.classList.remove('opacity-0');
+            }, 500);
+        }
+
+        function squishSplashSlime() {
+            const slime = document.getElementById('splash-slime');
+            slime.style.transform = 'scale3d(1.15, 0.85, 1)';
+            setTimeout(() => {
+                slime.style.transform = 'scale3d(0.9, 1.1, 1)';
+                setTimeout(() => {
+                    slime.style.transform = '';
+                }, 120);
+            }, 120);
+        }
+
+        // RENDER PROFILE
+        function renderProfile() {
+            document.getElementById('user-name').textContent = state.profile.name;
+            document.getElementById('user-title').textContent = state.profile.title;
+            document.getElementById('user-pronouns').textContent = state.profile.pronouns;
+            document.getElementById('user-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ${state.profile.status}`;
+            document.getElementById('user-bio').textContent = state.profile.bio;
+
+            const imgContainer = document.getElementById('avatar-img-container');
+            const imgEl = document.getElementById('avatar-img');
+            const slimeFace = document.getElementById('avatar-slime-face');
+
+            if (state.profile.avatarUrl && state.profile.avatarUrl.trim() !== "") {
+                imgEl.src = state.profile.avatarUrl;
+                imgContainer.classList.remove('hidden');
+                slimeFace.classList.add('opacity-20');
+            } else {
+                imgContainer.classList.add('hidden');
+                slimeFace.classList.remove('opacity-20');
+            }
+
+            const tagsContainer = document.getElementById('user-tags');
+            tagsContainer.innerHTML = '';
+            (state.profile.tags || []).forEach(tag => {
+                if (!tag.trim()) return;
+                const span = document.createElement('span');
+                span.className = 'text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-slate-300 font-medium';
+                span.textContent = `# ${tag.trim()}`;
+                tagsContainer.appendChild(span);
+            });
+        }
+
+        // RENDER SOCIAL LINKS
+        function renderLinks() {
+            const grid = document.getElementById('social-grid');
+            grid.innerHTML = '';
+
+            const fragment = document.createDocumentFragment();
+            state.links.forEach(link => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl p-4 flex items-center justify-between group cursor-pointer hw-accel';
+                card.onclick = () => window.open(link.url, '_blank');
+
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3.5 overflow-hidden">
+                        <div class="w-11 h-11 rounded-xl bg-black/40 flex items-center justify-center text-xl ${link.color || 'text-[var(--theme-primary)]'} border border-white/5 group-hover:scale-105 transition-transform">
+                            <i class="${link.icon}"></i>
+                        </div>
+                        <div class="truncate">
+                            <h3 class="text-sm font-bold text-white group-hover:text-[var(--theme-primary)] transition truncate">${link.title}</h3>
+                            <p class="text-xs text-slate-400 truncate">${link.handle}</p>
+                        </div>
+                    </div>
+                    <button onclick="copyToClipboard(event, '${link.handle}')" class="text-slate-500 hover:text-white p-2 rounded-lg hover:bg-white/10 transition" title="Copy Handle">
+                        <i class="fa-solid fa-copy text-xs"></i>
+                    </button>
+                `;
+                fragment.appendChild(card);
+            });
+            grid.appendChild(fragment);
+        }
+
+        // RENDER GALLERY
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+
+            const fragment = document.createDocumentFragment();
+            state.gallery.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glass-card rounded-2xl overflow-hidden cursor-pointer group hw-accel';
+                card.onclick = () => openLightbox(item.image, item.title, item.desc);
+
+                card.innerHTML = `
+                    <div class="h-40 overflow-hidden relative">
+                        <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-60"></div>
+                    </div>
+                    <div class="p-3.5">
+                        <h3 class="text-sm font-bold text-white group-hover:text-[var(--theme-primary)] transition">${item.title}</h3>
+                        <p class="text-xs text-slate-400 truncate mt-0.5">${item.desc}</p>
+                    </div>
+                `;
+                fragment.appendChild(card);
+            });
+            grid.appendChild(fragment);
+        }
+
+        // GALLERY LIGHTBOX
+        function openLightbox(img, title, desc) {
+            document.getElementById('lightbox-img').src = img;
+            document.getElementById('lightbox-title').textContent = title;
+            document.getElementById('lightbox-desc').textContent = desc;
+            document.getElementById('gallery-lightbox').classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('gallery-lightbox').classList.add('hidden');
+        }
+
+        // THEME APPLIER
+        function applyTheme(themeKey, notify = true) {
+            const t = THEMES[themeKey] || THEMES.emerald;
+            state.theme = themeKey;
+            
+            document.documentElement.style.setProperty('--theme-primary', t.primary);
+            document.documentElement.style.setProperty('--theme-secondary', t.secondary);
+            document.documentElement.style.setProperty('--theme-glow', t.glow);
+            document.body.style.background = t.bg;
+
+            saveState();
+            if (notify) showToast(`Theme changed to ${themeKey.toUpperCase()}`);
+        }
+
+        // SQUISH INTERACTION
+        function squishAvatarEffect() {
+            const avatar = document.getElementById('hero-avatar-slime');
+            avatar.style.transform = 'scale3d(1.2, 0.8, 1)';
+            setTimeout(() => {
+                avatar.style.transform = 'scale3d(0.88, 1.12, 1)';
+                setTimeout(() => {
+                    avatar.style.transform = '';
+                }, 120);
+            }, 120);
+        }
+
+        function handleAvatarInteraction(e) {
+            squishAvatarEffect();
+            handleSecretClick(e);
+        }
+
+        // SECRET MULTI-CLICK TRIGGER LOGIC
+        let clickCount = 0;
+        let clickTimer = null;
+
+        function handleSecretClick(e) {
+            clickCount++;
+            if (clickTimer) clearTimeout(clickTimer);
+
+            if (clickCount >= 3) {
+                clickCount = 0;
+                requestAdminAccess();
+            } else {
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 400);
+            }
+        }
+
+        // ADMIN AUTHENTICATION
+        function requestAdminAccess() {
+            if (isAuthenticated) {
+                toggleAdminPanel();
+            } else {
+                document.getElementById('auth-error').classList.add('hidden');
+                document.getElementById('auth-password').value = '';
+                document.getElementById('auth-modal').classList.remove('hidden');
+                setTimeout(() => document.getElementById('auth-password').focus(), 100);
+            }
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.add('hidden');
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const inputPass = document.getElementById('auth-password').value;
+            const errorEl = document.getElementById('auth-error');
+            const cardEl = document.getElementById('auth-card');
+
+            if (inputPass === state.password) {
+                isAuthenticated = true;
+                closeAuthModal();
+                toggleAdminPanel();
+                showToast("🔓 Access Granted - Control Panel Unlocked");
+            } else {
+                errorEl.classList.remove('hidden');
+                cardEl.classList.add('animate-shake');
+                setTimeout(() => cardEl.classList.remove('animate-shake'), 350);
+            }
+        }
+
+        // ADMIN PANEL MODAL CONTROLS
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-modal');
+            if (panel.classList.contains('hidden')) {
+                populateAdminFields();
+                panel.classList.remove('hidden');
+            } else {
+                panel.classList.add('hidden');
+            }
+        }
+
+        function switchTab(tabName) {
+            ['profile', 'backgrounds', 'links', 'gallery', 'theme', 'security'].forEach(t => {
+                const btn = document.getElementById(`tab-btn-${t}`);
+                const content = document.getElementById(`tab-content-${t}`);
+                if (t === tabName) {
+                    btn.className = "px-4 py-2 rounded-xl bg-[var(--theme-primary)] text-slate-950 font-bold flex items-center gap-2 whitespace-nowrap";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "px-4 py-2 rounded-xl text-slate-400 hover:bg-white/5 flex items-center gap-2 whitespace-nowrap";
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        function populateAdminFields() {
+            document.getElementById('edit-name').value = state.profile.name;
+            document.getElementById('edit-title').value = state.profile.title;
+            document.getElementById('edit-pronouns').value = state.profile.pronouns;
+            document.getElementById('edit-status').value = state.profile.status;
+            document.getElementById('edit-avatar-url').value = state.profile.avatarUrl || '';
+            document.getElementById('edit-bio').value = state.profile.bio;
+            document.getElementById('edit-tags').value = (state.profile.tags || []).join(', ');
+            document.getElementById('edit-password').value = state.password;
+
+            document.getElementById('edit-welcome-bg-url').value = state.backgrounds?.welcome?.url || '';
+            document.getElementById('edit-welcome-opacity').value = state.backgrounds?.welcome?.opacity ?? 0.6;
+            document.getElementById('edit-welcome-blur').value = state.backgrounds?.welcome?.blur ?? 4;
+            document.getElementById('welcome-opacity-val').textContent = state.backgrounds?.welcome?.opacity ?? 0.6;
+            document.getElementById('welcome-blur-val').textContent = (state.backgrounds?.welcome?.blur ?? 4) + 'px';
+
+            document.getElementById('edit-main-bg-url').value = state.backgrounds?.main?.url || '';
+            document.getElementById('edit-main-opacity').value = state.backgrounds?.main?.opacity ?? 0.2;
+            document.getElementById('edit-main-blur').value = state.backgrounds?.main?.blur ?? 2;
+            document.getElementById('main-opacity-val').textContent = state.backgrounds?.main?.opacity ?? 0.2;
+            document.getElementById('main-blur-val').textContent = (state.backgrounds?.main?.blur ?? 2) + 'px';
+
+            renderAdminLinksList();
+            renderAdminGalleryList();
+        }
+
+        function renderAdminLinksList() {
+            const list = document.getElementById('admin-links-list');
+            list.innerHTML = '';
+
+            state.links.forEach((link, idx) => {
+                const div = document.createElement('div');
+                div.className = 'p-3 rounded-2xl bg-black/40 border border-white/10 space-y-2 text-xs';
+                div.innerHTML = `
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" value="${link.title}" onchange="updateLinkItem(${idx}, 'title', this.value)" placeholder="Title" class="bg-black/40 border border-white/10 rounded-lg p-2 text-white">
+                        <input type="text" value="${link.handle}" onchange="updateLinkItem(${idx}, 'handle', this.value)" placeholder="Handle" class="bg-black/40 border border-white/10 rounded-lg p-2 text-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" value="${link.url}" onchange="updateLinkItem(${idx}, 'url', this.value)" placeholder="URL" class="bg-black/40 border border-white/10 rounded-lg p-2 text-white">
+                        <div class="flex items-center gap-2">
+                            <input type="text" value="${link.icon}" onchange="updateLinkItem(${idx}, 'icon', this.value)" placeholder="FA Icon Class" class="bg-black/40 border border-white/10 rounded-lg p-2 text-white flex-1">
+                            <button onclick="deleteLinkItem(${idx})" class="p-2 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500/40">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function updateLinkItem(idx, key, val) {
+            state.links[idx][key] = val;
+        }
+
+        function addNewLinkItem() {
+            state.links.push({
+                id: Date.now().toString(),
+                title: 'New Link',
+                handle: '@username',
+                icon: 'fa-solid fa-link',
+                url: 'https://',
+                color: 'text-emerald-400'
+            });
+            renderAdminLinksList();
+        }
+
+        function deleteLinkItem(idx) {
+            state.links.splice(idx, 1);
+            renderAdminLinksList();
+        }
+
+        function renderAdminGalleryList() {
+            const list = document.getElementById('admin-gallery-list');
+            list.innerHTML = '';
+
+            state.gallery.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = 'p-3 rounded-2xl bg-black/40 border border-white/10 space-y-2 text-xs';
+                div.innerHTML = `
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" value="${item.title}" onchange="updateGalleryItem(${idx}, 'title', this.value)" placeholder="Title" class="bg-black/40 border border-white/10 rounded-lg p-2 text-white">
+                        <input type="text" value="${item.desc}" onchange="updateGalleryItem(${idx}, 'desc', this.value)" placeholder="Description" class="bg-black/40 border border-white/10 rounded-lg p-2 text-white">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="text" value="${item.image}" onchange="updateGalleryItem(${idx}, 'image', this.value)" placeholder="Image URL" class="bg-black/40 border border-white/10 rounded-lg p-2 text-white flex-1">
+                        <button onclick="deleteGalleryItem(${idx})" class="p-2 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500/40">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        function updateGalleryItem(idx, key, val) {
+            state.gallery[idx][key] = val;
+        }
+
+        function addNewGalleryItem() {
+            state.gallery.push({
+                id: 'g_' + Date.now(),
+                title: 'New Showcase Item',
+                desc: 'Artwork / Screenshot details',
+                image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80'
+            });
+            renderAdminGalleryList();
+        }
+
+        function deleteGalleryItem(idx) {
+            state.gallery.splice(idx, 1);
+            renderAdminGalleryList();
+        }
+
+        function saveAdminChanges() {
+            state.profile.name = document.getElementById('edit-name').value;
+            state.profile.title = document.getElementById('edit-title').value;
+            state.profile.pronouns = document.getElementById('edit-pronouns').value;
+            state.profile.status = document.getElementById('edit-status').value;
+            state.profile.avatarUrl = document.getElementById('edit-avatar-url').value;
+            state.profile.bio = document.getElementById('edit-bio').value;
+            state.profile.tags = document.getElementById('edit-tags').value.split(',').map(t => t.trim());
+
+            state.backgrounds.welcome.url = document.getElementById('edit-welcome-bg-url').value;
+            state.backgrounds.welcome.opacity = parseFloat(document.getElementById('edit-welcome-opacity').value);
+            state.backgrounds.welcome.blur = parseInt(document.getElementById('edit-welcome-blur').value);
+
+            state.backgrounds.main.url = document.getElementById('edit-main-bg-url').value;
+            state.backgrounds.main.opacity = parseFloat(document.getElementById('edit-main-opacity').value);
+            state.backgrounds.main.blur = parseInt(document.getElementById('edit-main-blur').value);
+
+            const newPass = document.getElementById('edit-password').value;
+            if (newPass.trim() !== '') {
+                state.password = newPass.trim();
+            }
+
+            saveState();
+            renderProfile();
+            renderLinks();
+            renderGallery();
+            renderBackgrounds();
+            toggleAdminPanel();
+            showToast("✨ Settings & background saved!");
+        }
+
+        function resetToDefaults() {
+            if (confirm("Are you sure you want to reset all site settings back to default?")) {
+                state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+                saveState();
+                renderProfile();
+                renderLinks();
+                renderGallery();
+                renderBackgrounds();
+                applyTheme('emerald', false);
+                toggleAdminPanel();
+                showToast("🔄 Data reset to defaults!");
+            }
+        }
+
+        // KEYBOARD SHORTCUTS
+        let secretKeyBuffer = '';
+        function setupKeyboardShortcuts() {
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                    closeAuthModal();
+                    const adminModal = document.getElementById('admin-modal');
+                    if (!adminModal.classList.contains('hidden')) toggleAdminPanel();
+                }
+
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'm' || e.key === 'M')) {
+                    e.preventDefault();
+                    requestAdminAccess();
+                }
+
+                if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                    secretKeyBuffer += e.key.toLowerCase();
+                    if (secretKeyBuffer.length > 8) {
+                        secretKeyBuffer = secretKeyBuffer.substring(secretKeyBuffer.length - 8);
+                    }
+                    if (secretKeyBuffer.endsWith('slime')) {
+                        secretKeyBuffer = '';
+                        requestAdminAccess();
+                    }
+                }
+            }, { passive: true });
+        }
+
+        // UTILITIES
+        function copyToClipboard(e, text) {
+            e.stopPropagation();
+            const input = document.createElement('input');
+            input.value = text;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            showToast(`📋 Copied: ${text}`);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // HIGH PERFORMANCE (60FPS THROTTLED) FLUID CANVAS
+        function initCanvas() {
+            const canvas = document.getElementById('slime-canvas');
+            const ctx = canvas.getContext('2d', { alpha: true });
+            let width, height;
+
+            function resize() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize, { passive: true });
+            resize();
+
+            // Reduced particle count for maximum performance across mobile & low-end GPUs
+            const particles = [];
+            const particleCount = Math.min(18, Math.floor(width / 60));
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 16 + 8,
+                    vx: (Math.random() - 0.5) * 0.6,
+                    vy: (Math.random() - 0.5) * 0.6,
+                    alpha: Math.random() * 0.25 + 0.1
+                });
+            }
+
+            let targetMouseX = width / 2;
+            let targetMouseY = height / 2;
+            let mouseX = targetMouseX;
+            let mouseY = targetMouseY;
+
+            // Throttled mouse position update
+            window.addEventListener('mousemove', (e) => {
+                targetMouseX = e.clientX;
+                targetMouseY = e.clientY;
+            }, { passive: true });
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Smooth mouse interpolation
+                mouseX += (targetMouseX - mouseX) * 0.1;
+                mouseY += (targetMouseY - mouseY) * 0.1;
+
+                const primaryHex = getComputedStyle(document.documentElement).getPropertyValue('--theme-primary').trim() || '#10b981';
+
+                for (let i = 0; i < particleCount; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    // Repulsion near cursor
+                    const dx = mouseX - p.x;
+                    const dy = mouseY - p.y;
+                    const distSq = dx * dx + dy * dy;
+                    if (distSq < 10000) { // 100px radius
+                        const dist = Math.sqrt(distSq);
+                        p.x -= (dx / dist) * 0.6;
+                        p.y -= (dy / dist) * 0.8;
+                    }
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = primaryHex;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.fill();
+                }
+
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+    </script>
+</body>
+</html>
