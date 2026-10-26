@@ -242,7 +242,7 @@
         </section>
     </div>
 
-    <!-- 5. PASSWORD SECURITY AUTH MODAL (已改为明文显示，彻底杜绝输入法和遮挡导致的卡顿 Bug) -->
+    <!-- 5. PASSWORD SECURITY AUTH MODAL -->
     <div id="auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4 hw-accel">
         <div id="auth-card" class="glass-panel w-full max-w-md rounded-3xl p-6 border border-white/10 shadow-2xl relative">
             <button type="button" onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
@@ -259,9 +259,8 @@
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Password (明文显示)</label>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Password</label>
                     <div class="relative">
-                        <!-- 改为 type="text"，输入时能直接看到完整字母 -->
                         <input type="text" id="auth-password" placeholder="Enter password (e.g. slime123)..." class="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[var(--theme-primary)] transition pl-10">
                         <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-500 text-sm"></i>
                     </div>
@@ -374,7 +373,8 @@
 
     <!-- SCRIPT -->
     <script>
-        const STORAGE_KEY = 'slime_space_sync_v10';
+        // 强力版本同步号：如果你以后修改了下方的 DEFAULT_CONFIG，把这里改成 v12 即可让手机强制刷新同步！
+        const STORAGE_KEY = 'slime_space_sync_v11';
 
         const DEFAULT_CONFIG = {
             password: 'slime123',
@@ -385,8 +385,11 @@
             bio: 'Hello! Welcome to my personal slime cozy space. I love digital painting, VRChat world exploration, and creating cute character designs. Feel free to connect!',
             tags: ['Gamer', 'Illustrator', 'VRChat', 'Digital Art'],
             avatarUrl: '',
+            
+            // 💡 欢迎页背景图和主页背景图链接直接写在这里，手机和电脑就会绝对同步！
             welcomeBg: '',
             mainBg: '',
+
             themePrimary: '#10b981',
             themeSecondary: '#06b6d4',
             themeBgGradient: 'radial-gradient(circle at 50% 20%, #11221c 0%, #060e0a 100%)',
