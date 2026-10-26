@@ -12,6 +12,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
         tailwind.config = {
@@ -140,7 +142,7 @@
                 </div>
                 <div>
                     <span class="font-fredoka text-lg font-bold text-white">Slime Space</span>
-                    <span class="text-xs px-2 py-0.5 rounded-full bg-[var(--theme-primary)]/20 text-[var(--theme-primary)] border border-[var(--theme-primary)]/40 ml-2 font-mono">v23</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-[var(--theme-primary)]/20 text-[var(--theme-primary)] border border-[var(--theme-primary)]/40 ml-2 font-mono">v24-Cloud</span>
                 </div>
             </div>
             <!-- 右上角密码锁图标已彻底隐藏 -->
@@ -224,7 +226,7 @@
     <div id="admin-panel" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-3xl rounded-3xl p-6 border border-white/10 max-h-[85vh] flex flex-col">
             <div class="flex justify-between items-center pb-4 border-b border-white/10">
-                <h3 class="text-xl font-fredoka font-bold text-white">Slime Control Panel</h3>
+                <h3 class="text-xl font-fredoka font-bold text-white">Slime Control Panel (Cloud Sync)</h3>
                 <button onclick="closeAdminPanel()" class="text-slate-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
@@ -281,16 +283,22 @@
                 </div>
             </div>
 
-            <div class="pt-4 border-t border-white/10 flex justify-end gap-3">
-                <button onclick="closeAdminPanel()" class="px-5 py-2.5 rounded-xl bg-white/5 text-slate-300 text-sm cursor-pointer">取消</button>
-                <button onclick="saveChanges()" class="px-6 py-2.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 font-bold text-sm cursor-pointer">保存并同步</button>
+            <div class="pt-4 border-t border-white/10 flex justify-between items-center">
+                <span id="sync-status" class="text-xs text-slate-400"></span>
+                <div class="flex gap-3">
+                    <button onclick="closeAdminPanel()" class="px-5 py-2.5 rounded-xl bg-white/5 text-slate-300 text-sm cursor-pointer">取消</button>
+                    <button onclick="saveChanges()" class="px-6 py-2.5 rounded-xl bg-[var(--theme-primary)] text-slate-950 font-bold text-sm cursor-pointer">保存并同步到云端</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // 💡 版本号 v23，如果希望“电脑改了什么，手机打开就出现什么”，可直接在下方 DEFAULT_CONFIG 修改默认配置，并推送到 GitHub 即可双端完美同步！
-        const STORAGE_KEY = 'slime_space_sync_v23';
+        // 💡 Supabase 初始化配置
+        const SUPABASE_URL = 'https://ufvzkyqmaruhglclkqej.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVmdnpreXFtYXJ1aGdsY2xrcWVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5ODU1OTUsImV4cCI6MjEwODU2MTU5NX0.2_oW4otHtD-BthUS1M9VIKtxOQCFCGo9j5bJgTPa4zg';
+        
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const DEFAULT_CONFIG = {
             password: 'slime123',
@@ -301,8 +309,8 @@
             bio: 'Hello! Welcome to my personal slime cozy space. I love digital painting, VRChat world exploration, and creating cute character designs. Feel free to connect!',
             tags: ['Gamer', 'Illustrator', 'VRChat', 'Digital Art'],
             avatarUrl: '',
-            welcomeBg: 'https://github.com/SILENTCLONE0408/slime-showcase/blob/main/WhatsApp%20Image%202026-10-26%20at%2012.04.22%20AM.jpeg?raw=true',
-            mainBg: 'https://github.com/SILENTCLONE0408/slime-showcase/blob/main/WhatsApp%20Image%202026-10-26%20at%2012.04.22%20AM.jpeg?raw=true', // 💡 贴入你的 GitHub 背景图 Raw 链接
+            welcomeBg: '',
+            mainBg: '',
             themePrimary: '#10b981',
             themeSecondary: '#06b6d4',
             links: [
@@ -318,13 +326,21 @@
 
         let appData = { ...DEFAULT_CONFIG };
 
-        function loadData() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try { 
-                    const parsed = JSON.parse(saved);
-                    appData = { ...DEFAULT_CONFIG, ...parsed }; 
-                } catch(e) {}
+        // 💡 从 Supabase 云端加载配置
+        async function loadData() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('slime_config')
+                    .select('data')
+                    .order('id', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                if (data && data.data) {
+                    appData = { ...DEFAULT_CONFIG, ...data.data };
+                }
+            } catch (e) {
+                console.log('从云端加载失败，使用默认配置', e);
             }
             applyTheme();
             render();
@@ -495,7 +511,8 @@
         function addLink() { appData.links.push({ name: 'New', handle: '@handle', url: '#', icon: 'fa-solid fa-link' }); renderAdminLists(); }
         function addGallery() { appData.gallery.push({ title: 'New Art', tag: 'Art', url: '' }); renderAdminLists(); }
 
-        function saveChanges() {
+        // 💡 核心：保存并直接写入 Supabase 云端数据库
+        async function saveChanges() {
             appData.name = document.getElementById('edit-name').value;
             appData.title = document.getElementById('edit-title').value;
             appData.pronouns = document.getElementById('edit-pronouns').value;
@@ -506,10 +523,28 @@
             appData.welcomeBg = document.getElementById('edit-welcome-bg').value;
             appData.mainBg = document.getElementById('edit-main-bg').value;
 
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-            applyTheme();
-            render();
-            closeAdminPanel();
+            const statusEl = document.getElementById('sync-status');
+            statusEl.innerText = '正在同步到云端...';
+
+            try {
+                // 向 Supabase 的 slime_config 表插入/更新数据
+                const { error } = await supabaseClient
+                    .from('slime_config')
+                    .insert([{ data: appData }]);
+
+                if (error) throw error;
+
+                statusEl.innerText = '✅ 云端同步成功！';
+                applyTheme();
+                render();
+                setTimeout(() => {
+                    closeAdminPanel();
+                    statusEl.innerText = '';
+                }, 1000);
+            } catch (err) {
+                console.error(err);
+                statusEl.innerText = '❌ 同步失败，请检查 Supabase 表结构';
+            }
         }
 
         // Canvas 粒子背景
@@ -542,6 +577,7 @@
         }
         animate();
 
+        // 页面启动时加载云端数据
         loadData();
     </script>
 </body>
