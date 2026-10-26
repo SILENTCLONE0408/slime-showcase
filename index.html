@@ -133,16 +133,17 @@
     <!-- 主界面 -->
     <div id="app-content" class="relative z-20 max-w-4xl mx-auto px-4 py-6 w-full">
         <header class="w-full flex justify-between items-center mb-8 glass-panel rounded-2xl p-4">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="handleSecretClick()">
+            <!-- 连击左上角品牌 3 次可打开密码后台 -->
+            <div class="flex items-center space-x-3 cursor-pointer select-none" onclick="handleSecretClick()">
                 <div class="w-10 h-10 rounded-full bg-[var(--theme-primary)] flex items-center justify-center text-slate-950 font-bold font-fredoka shadow-[0_0_12px_var(--theme-glow)]">
                     <i class="fa-solid fa-spaghetti-monster-flying text-xl"></i>
                 </div>
                 <div>
                     <span class="font-fredoka text-lg font-bold text-white">Slime Space</span>
-                    <span class="text-xs px-2 py-0.5 rounded-full bg-[var(--theme-primary)]/20 text-[var(--theme-primary)] border border-[var(--theme-primary)]/40 ml-2 font-mono">v3.8</span>
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-[var(--theme-primary)]/20 text-[var(--theme-primary)] border border-[var(--theme-primary)]/40 ml-2 font-mono">v23</span>
                 </div>
             </div>
-            <!-- 右上角小锁/钥匙图标已彻底隐藏，点击左上角史莱姆图标三击或使用快捷键仍可进入后台 -->
+            <!-- 右上角密码锁图标已彻底隐藏 -->
             <div class="w-9 h-9 opacity-0 pointer-events-none"></div>
         </header>
 
@@ -196,7 +197,7 @@
         </section>
     </div>
 
-    <!-- 密码验证弹窗 -->
+    <!-- 密码验证弹窗 (密码: slime123) -->
     <div id="auth-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-md rounded-3xl p-6 border border-white/10 shadow-2xl relative">
             <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-lg w-8 h-8 rounded-full bg-white/5 flex items-center justify-center cursor-pointer">
@@ -288,7 +289,8 @@
     </div>
 
     <script>
-        const STORAGE_KEY = 'slime_space_sync_v20';
+        // 💡 版本号 v23，如果希望“电脑改了什么，手机打开就出现什么”，可直接在下方 DEFAULT_CONFIG 修改默认配置，并推送到 GitHub 即可双端完美同步！
+        const STORAGE_KEY = 'slime_space_sync_v23';
 
         const DEFAULT_CONFIG = {
             password: 'slime123',
@@ -300,7 +302,7 @@
             tags: ['Gamer', 'Illustrator', 'VRChat', 'Digital Art'],
             avatarUrl: '',
             welcomeBg: '',
-            mainBg: '',
+            mainBg: '', // 💡 贴入你的 GitHub 背景图 Raw 链接
             themePrimary: '#10b981',
             themeSecondary: '#06b6d4',
             links: [
@@ -319,7 +321,10 @@
         function loadData() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
-                try { appData = { ...DEFAULT_CONFIG, ...JSON.parse(saved) }; } catch(e) {}
+                try { 
+                    const parsed = JSON.parse(saved);
+                    appData = { ...DEFAULT_CONFIG, ...parsed }; 
+                } catch(e) {}
             }
             applyTheme();
             render();
@@ -417,7 +422,6 @@
             }
         }
 
-        // 键盘快捷键 Ctrl+M 或连击 slime 也能呼出密码框
         window.addEventListener('keydown', (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'm') {
                 e.preventDefault();
